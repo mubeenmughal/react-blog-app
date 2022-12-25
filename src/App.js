@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from "react";
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+import { UserContext, UserProvider } from "./components/UserContext";
+import { useContext } from "react";
+import { Post } from "./components/Post";
+import { SignUp } from "./components/SignUp";
+import SinglePost from "./components/SinglePost";
+import CreatePost from "./models/CreatePost";
+import { GlobalContext } from "./components/GlobalContext";
+import ButtonAppBar from "./components/Navbar";
+import Navbar from "./components/Navbar";
 
-function App() {
+export const baseUrl = "http://localhost:3000/data";
+
+const App = () => {
+  const { isLogin } = useContext(GlobalContext);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <Router>
+      <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={isLogin ? <Post /> : <Navigate to="/sign_up" />}
+          />
+          <Route
+            path="/sign_up"
+            element={!isLogin ? <SignUp /> : <Navigate to="/" />}
+          />
+
+          <Route
+            path="/post/:id"
+            element={isLogin ? <SinglePost /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/post/:id/comments"
+            element={isLogin ? <SinglePost /> : <Navigate to="/" />}
+          />
+
+          <Route
+            path="/post/create"
+            element={isLogin ? <CreatePost /> : <Navigate to="/" />}
+          />
+        </Routes>
+      </Router>
+    </React.Fragment>
   );
-}
+};
 
 export default App;
